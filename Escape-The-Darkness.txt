@@ -1,0 +1,191 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#ifdef _WIN32
+#include <windows.h>  
+#endif
+#define MAXT 256
+#define MAX_OPS 4
+//#include <graphics.h> 
+#include<conio.h>
+struct state {
+    int fear;
+    int happy;
+    int Hasknife;
+};
+struct state st = {0, 0, 0};
+
+typedef struct option {
+    char text[MAXT];
+    int next;                    
+    void (*action)(struct state*);
+    int Needfear;               
+    int Needhappy;               
+} OP;
+struct scene {
+    char de[MAXT];                // 场景
+    int num1;                     // 选项数
+    OP ops[MAX_OPS];              // 选项emm
+};
+void fearup(struct state *s){
+ 	s->fear += 5; printf("恐惧 +5\n"); 
+ 	}
+void happyup(struct state *s){ 
+	s->happy += 5; printf("快乐 +5\n"); 
+	}
+void happydown(struct state *s){ 
+	s->happy -= 5; printf("快乐 -5\n"); 
+	}
+void feardown(struct state *s){
+ 	s->fear -= 5; printf("恐惧 -5\n"); 
+ 	}
+void nothing(struct state *s) { 
+
+	}
+struct scene scenes[] = {
+    //0
+    {
+        ".....这是哪？很不巧，这里只有黑暗，黑暗，无尽的黑暗。你是怎么来到这里的呢？天也不知道。你想做什么呢？",
+        3,
+        {
+            {"大声吼叫 但是真的有人能听见吗？", 1, NULL, -1, -1},
+            {"有时候听觉比视觉更重要，so？", 2, NULL, -1, -1},
+            {"要阴暗地爬行！狂奔！翻滚！！", 3, NULL, -1, -1}
+        }
+    },
+    //1
+    {
+        "\"有人吗！！\"......\"哒哒\".?\"哒哒哒\"..?刚才还挺安静的呀？怎么..不对，好像有人？那真的是人me..哒哒哒哒哒哒.....没事了，你已经什么都听不见了。\n Gameover",
+        1,
+        {
+            {"end 1", 8, NULL, -1, -1}
+        }
+    },
+    //2
+    {
+        "\"..你好\" ...谁？什么东西？凭空出现了吗",
+        2,
+        {
+            {"666家人们觉得我能活过今晚吗？run了家人们", 4, fearup, -1, -1},
+            {"hello?你好？Hola？",4, happyup, -1, -1}
+        
+        }
+    },
+    //3
+    {
+        "发疯确实挺有趣的，不得不说你现在什么都不怕了，心跳加快，肾上腺素飙升，以至于你都没发现自己失去了不少东西。。\n gameover",
+        1,
+        {
+            {"end 2", 9, NULL, -1, -1}
+        }
+    },
+    //4
+    {
+        "\"你怎么会在这里？程序出bug了吗？没事，这就送你回去\"",
+        2,
+        {
+            {"？所以我只是一串代码吗", 7, fearup, -1, -1},
+            {"行吧.", 5, happyup, -1, -1}
+            // {"我不想回去", 6, nothing, -1, 4}
+        }
+    },
+    //5
+    {
+        "waiting",
+        1,
+        {
+            {"回家", 6, NULL, -1, -1}
+      
+        }
+    },
+    //6
+    {
+        "你在熟悉的房间中醒来，这一切仿佛只是一场梦。不一会，关于这个梦的一切都变得如此飘渺。什么？你刚才在想什么呢？你真的不知道了",
+        1,
+        {
+            {"dream", -1, NULL, -1, -1}
+        }
+    },
+    //7
+    {
+        "\"是我多嘴了。。如果你回去乱说该怎么办\"虽然看不见，但对面的生物似乎在思考么？几分钟后，你的腹部传来连续几阵刺痛，你不得不倒在了地上\n 看来他不打算给封口费了",
+        1,
+        {
+            {"噩梦？", -1, NULL, -1, -1}
+        }
+    },
+    //8
+    {
+        "这下寄了",
+        1,
+        {
+            {"??", -1, NULL, -1, -1}
+        }
+    },
+    //9
+    {
+        "\"?这是什么？肉块吗？等等，这是手指。。\"学校里出现了大量不知名肉块。。",
+        1,
+        {
+            {"肉", -1, NULL, -1, -1}
+        }
+    }
+};
+
+int sceneCount = sizeof(scenes) / sizeof(scenes[0]);
+int main() {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
+    int currentScene = 0;
+    int choice;
+    printf("输入选项前的数字\n");
+
+    while (currentScene >= 0 && currentScene < sceneCount) {
+        struct scene *s = &scenes[currentScene];
+        printf("---------------------------------------\n");
+        printf("%s\n\n", s->de);
+        printf("---------------------------------------\n");
+        // 显示当前状态（方便玩家参考）
+        printf("[fear：%d  happy：%d]\n", st.fear, st.happy);
+        int available[MAX_OPS];
+        int availCount = 0;
+        for (int i = 0; i < s->num1; i++) {
+            OP *op = &s->ops[i];
+            if ((op->Needfear == -1 || st.fear >= op->Needfear) &&
+                (op->Needhappy == -1 || st.happy >= op->Needhappy)) {
+                available[availCount] = i;
+                printf("%d. %s\n", availCount + 1, op->text);
+                availCount++;
+            }
+        }
+
+        if (availCount == 0) {
+            printf("游戏结束。\n");
+            break;
+        }
+        printf("\n请选择 (1-%d): ", availCount);
+        char input[10];
+        fgets(input, sizeof(input), stdin);
+        choice = atoi(input);
+        if (choice < 1 || choice > availCount) {
+            printf("error\n\n");
+            continue;
+		}
+		int realIdx = available[choice - 1];
+        OP *selected = &s->ops[realIdx];
+
+        if (selected->action != NULL) {
+            selected->action(&st);
+        }
+
+        currentScene = selected->next;
+        printf("\n");
+    }
+
+    printf("游戏结束\n");
+    return 0;
+}
+            
+}
+            
