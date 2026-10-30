@@ -3,8 +3,8 @@
 ## Escape_from_the_darkness
 a text game!you wake up in a strange place with endless dark...Someone is here?What should you do?chose the right choice!
 真正意义上的第一部文字游戏。是自己做着玩的来着。这和我另一个项目的世界观相同（SpaceTraverser）这是基于c语言的文字游戏（提供多个结局。通过结构体和函数指针来实现。
-**请使用C语言编译器运行!**
-很抱歉上传的是txt文件呢。。
+**请使用C/cpp语言编译器运行!**
+你在一片蓝得发黑的地方醒来。这是现实还是梦？这里。。似乎不太太平，但是你的身体似乎轻盈了不少，没有令人难受的病痛，没有ddl。。怎么有点...喜欢这里了呢
 
 ## Escape_from_maze
 这是一个基于C++开发的课程个人小项目，主要用来练习对栈和队列的使用。（IDE：Dev-C++ 5.11；）
