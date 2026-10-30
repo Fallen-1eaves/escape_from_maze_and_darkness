@@ -4,9 +4,8 @@
 #ifdef _WIN32
 #include <windows.h>  
 #endif
-#define MAXT 256
+#define MAXT 400
 #define MAX_OPS 4
-//#include <graphics.h> 
 struct state {
     int fear;
     int happy;
@@ -22,9 +21,9 @@ typedef struct option {
     int Needhappy;               
 } OP;
 struct scene {
-    char de[MAXT];                // 场景
-    int num1;                     // 选项数
-    OP ops[MAX_OPS];              // 选项emm
+    char de[MAXT];                
+    int num1;                     
+    OP ops[MAX_OPS];              
 };
 void fearup(struct state *s){
  	s->fear += 5; printf("恐惧 +5\n"); 
@@ -81,11 +80,11 @@ struct scene scenes[] = {
     //4
     {
         "\"你怎么会在这里？程序出bug了吗？没事，这就送你回去\"",
-        2,
+        3,
         {
             {"？所以我只是一串代码吗", 7, fearup, -1, -1},
-            {"行吧.", 5, happyup, -1, -1}
-            // {"我不想回去", 6, nothing, -1, 4}
+            {"行吧.", 5, happyup, -1, -1},
+            {"我不想回去", 10, nothing, -1, 4}
         }
     },
     //5
@@ -94,7 +93,6 @@ struct scene scenes[] = {
         1,
         {
             {"回家", 6, NULL, -1, -1}
-      
         }
     },
     //6
@@ -128,13 +126,28 @@ struct scene scenes[] = {
         {
             {"肉", -1, NULL, -1, -1}
         }
+    },
+    //10
+    {
+        "'我再也不想回到那样的生活中去了。。这里的我，好健康也好..完美？'\n 你张开了手掌，手心中似乎有着一束光。'甚至还有那么棒的...拜托你，带我走好吗？哪里...都可以。'\n....那个声音似乎沉默了一阵。'你确定吗？这样的话你就再也回不去了呢'\n ",
+        1,
+        {
+            {"点头",11,NULL,-1,-1}
+        }
+    },
+    //11  
+    {
+        "'唉，看来你是铁了心呢.健康且无法死去的身体，去那些常规的世界大概会被抓起来吧。既然如此...走吧'\n '代价就是你要为这个世界献一份力呢，偶尔也得去其他世界呢，这是你，也是我们的任务呢。'",
+        1, 
+        {
+            {"正确的决定",-1,NULL,-1,-1}
+        }
     }
 };
 
 int sceneCount = sizeof(scenes) / sizeof(scenes[0]);
 int main() {
-//#ifdef _WIN32
-    
+#ifdef _WIN32 
 #endif
     int currentScene = 0;
     int choice;
@@ -145,7 +158,6 @@ int main() {
         printf("---------------------------------------\n");
         printf("%s\n\n", s->de);
         printf("---------------------------------------\n");
-        // 显示当前状态
         printf("[fear：%d  happy：%d]\n", st.fear, st.happy);
         int available[MAX_OPS];
         int availCount = 0;
@@ -185,6 +197,3 @@ int main() {
     printf("游戏结束\n");
     return 0;
 }
-            
-
-            
